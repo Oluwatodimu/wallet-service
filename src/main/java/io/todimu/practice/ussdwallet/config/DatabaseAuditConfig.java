@@ -1,6 +1,6 @@
 package io.todimu.practice.ussdwallet.config;
 
-import io.todimu.practice.ussdwallet.security.SecurityAuditorAwareImpl;
+import io.todimu.practice.ussdwallet.security.SpringSecurityAuditorAwareImpl;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.domain.AuditorAware;
@@ -16,6 +16,6 @@ public class DatabaseAuditConfig {
 
     @Bean
     public AuditorAware<String> auditorAware() {
-        return new SecurityAuditorAwareImpl();
+        return new SpringSecurityAuditorAwareImpl();
     }
 }
