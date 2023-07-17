@@ -3,16 +3,22 @@ package io.todimu.practice.ussdwallet.model;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.todimu.practice.ussdwallet.enums.UserStatus;
 import jakarta.persistence.*;
-import lombok.Data;
+import lombok.*;
 
 import javax.validation.constraints.Pattern;
 import java.time.Instant;
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.Set;
 
-@Data
+@Getter
+@Setter
 @Entity
-@Table(name = "ussd_user")
+@Builder
+@ToString(exclude = {"authorities", "walletAssets"})
+@NoArgsConstructor
+@AllArgsConstructor
+@Table(name = "user")
 public class User extends BaseEntity {
 
     @JsonIgnore
@@ -59,5 +65,44 @@ public class User extends BaseEntity {
     )
     private Set<Authority> authorities = new HashSet<>();
 
-    // todo add wallet asset to user
+    @JsonIgnore
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    private Set<WalletAsset> walletAssets = new HashSet<>();
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(
+                password,
+                ussdPin,
+                firstName,
+                lastName,
+                email,
+                phoneNumber,
+                imageUrl,
+                activated,
+                passwordResetDate,
+                userStatus
+        );
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null || getClass() != obj.getClass()) {
+            return false;
+        }
+        User other = (User) obj;
+        return Objects.equals(password, other.password) &&
+                Objects.equals(ussdPin, other.ussdPin) &&
+                Objects.equals(firstName, other.firstName) &&
+                Objects.equals(lastName, other.lastName) &&
+                Objects.equals(email, other.email) &&
+                Objects.equals(phoneNumber, other.phoneNumber) &&
+                Objects.equals(imageUrl, other.imageUrl) &&
+                Objects.equals(activated, other.activated) &&
+                Objects.equals(passwordResetDate, other.passwordResetDate) &&
+                Objects.equals(userStatus, other.userStatus);
+    }
 }
